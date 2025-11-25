@@ -10,5 +10,5 @@ sources:
         description: "注文アイテムデータ"
 
 models:
-  - name: stg_order_items
+  - name: stg__order_items
     description: "注文アイテムデータ"
