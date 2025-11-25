@@ -19,3 +19,5 @@ models:
   dbt_exercise:
     staging:
       +materialized: view
+    intermediate:
+      +materialized: table
