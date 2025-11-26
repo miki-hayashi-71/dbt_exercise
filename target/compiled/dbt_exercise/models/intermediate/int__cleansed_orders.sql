@@ -17,4 +17,4 @@ from orders
 left join order_items on orders.order_id = order_items.order_id
 where
     order_items.status not in ("Cancelled", "Returned")
-    and orders.status not in ("Cancelled", "Returned")
+    or orders.status not in ("Cancelled", "Returned")
