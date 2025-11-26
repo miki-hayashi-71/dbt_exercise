@@ -24,5 +24,7 @@ select
     order_items.inventory_item_id,
     order_items.sale_price * 150 as sales_jpy
 from orders
-left join order_items on order_items.order_id = orders.order_id
-where orders.returned_at is null
+left join order_items on orders.order_id = order_items.order_id
+where
+    order_items.status not in ("Cancelled", "Returned")
+    or orders.status not in ("Cancelled", "Returned")
