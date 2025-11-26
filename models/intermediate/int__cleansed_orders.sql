@@ -1,6 +1,5 @@
 {{
     config(
-        materialized="table",
         partition_by={
             "field": "order_time_jst",
             "data_type": "timestamp",
