@@ -1,5 +1,6 @@
 {{
     config(
+        alias="daily_sales",
         materialized="table",
         partition_by={"field": "date", "data_type": "date", "granularity": "day"},
     )

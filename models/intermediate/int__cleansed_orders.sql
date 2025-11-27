@@ -1,5 +1,6 @@
 {{
     config(
+        alias="c1eensed_orders",
         materialized="table",
         partition_by={
             "field": "order_time_jst",
