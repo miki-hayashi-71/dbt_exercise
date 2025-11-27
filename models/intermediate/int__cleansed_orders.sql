@@ -1,9 +1,10 @@
 {{
     config(
+        alias="c1eansed_orders",
         materialized="table",
         partition_by={
             "field": "order_time_jst",
-            "data_type": "timestamp",
+            "data_type": "datetime",
             "granularity": "day",
         },
         cluster_by=["user_id"],
@@ -19,7 +20,7 @@ with
 select
     orders.order_id,
     orders.user_id,
-    datetime_add(orders.created_at, interval 9 hour) as order_time_jst,
+    datetime(orders.created_at, "+9") as order_time_jst,
     order_items.product_id,
     order_items.inventory_item_id,
     order_items.sale_price * 150 as sales_jpy
