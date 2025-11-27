@@ -1,6 +1,6 @@
 {{
     config(
-        alias="c1eansed_orders",
+        alias="cleansed_orders",
         materialized="table",
         partition_by={
             "field": "order_time_jst",
