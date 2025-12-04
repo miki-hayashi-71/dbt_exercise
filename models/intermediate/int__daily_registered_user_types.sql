@@ -19,19 +19,16 @@ with
         where user_id is not null
     ),
 
-    -- ordersのユーザーのログとeventsのユーザーのログを結合。各ユーザーのログを日付単位で表示
-    combined_logs as (
+    -- ordersのユーザーのログとeventsのユーザーのログを結合。各ユーザーのログを日付単位で表示（同一ユーザーが同日に複数ログがあった場合は重複を排除）
+    daily_access as (
         select user_id, date(created_at, "+9") as date
         from orders
 
-        union all
+        union distinct
 
         select user_id, date(created_at, "+9")
         from events
     ),
-
-    -- ユーザーごとのログを日付ごとに集計（同一ユーザーが同日に複数ログがあった場合は重複を排除）
-    daily_access as (select user_id, date, from combined_logs group by 1, 2),
 
     -- 各ユーザーの日付ごとのログに対して、前回アクセス日と翌回アクセス日を取得
     with_prev_next_date as (
