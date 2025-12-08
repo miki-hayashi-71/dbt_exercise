@@ -8,54 +8,38 @@
 
 with
     cleansed_orders as (select * from {{ ref("int__cleansed_orders") }}),
-    monthly_user_types as (
+
+    monthly_registered_user_types as (
         select * from {{ ref("int__monthly_registered_user_types") }}
     ),
 
-    -- 月次の部門・ブランドごとのユニークなユーザーを集計
-    monthly_brands_uu as (
+    -- 月・部門・ブランドごとのuuを集計
+    cleansed_orders_with_monthly_payment_uu as (
         select
-            date(date_trunc(order_time_jst, month)) as month,
+            sales_jpy,
+            user_id,
             product_department,
             product_brand,
-            sum(sales_jpy) as sum_sales,
-            count(distinct user_id) as payment_uu
+            date(date_trunc(order_time_jst, month)) as month,
+            count(distinct user_id) over (
+                partition by
+                    date(date_trunc(order_time_jst, month)),
+                    product_department,
+                    product_brand
+            ) as brand_total_uu
         from cleansed_orders
-        group by 1, 2, 3
     ),
 
-    -- monthly_brands_uuが10未満のブランドをOthersに変換し、cleansed_ordersのbrandと置き換える
-    cleansed_orders_with_others as (
-        select
-            date(date_trunc(cleansed_orders.order_time_jst, month)) as month,
-            cleansed_orders.product_department,
-            case
-                when monthly_brands_uu.payment_uu < 10
-                then "Others"
-                else monthly_brands_uu.product_brand
-            end as product_brand,
-            user_id,
-            sales_jpy,
-        from cleansed_orders
-        left join
-            monthly_brands_uu
-            on date(date_trunc(cleansed_orders.order_time_jst, month))
-            = monthly_brands_uu.month
-            and cleansed_orders.product_department
-            = monthly_brands_uu.product_department
-            and cleansed_orders.product_brand = monthly_brands_uu.product_brand
-    ),
-
-    -- 月、ユーザータイプ、部門、ブランド名でグルーピングして出力
+    -- 月・部門・ブランド毎のuuが10人未満の場合、ブランド名をothersに置き換える
     final as (
         select
             month,
             user_type,
             product_department as department,
-            product_brand as brand,
+            case when brand_total_uu < 10 then "Others" else product_brand end as brand,
             sum(sales_jpy) as sales,
             count(distinct user_id) as payment_uu
-        from cleansed_orders_with_others
+        from cleansed_orders_with_monthly_payment_uu
         left join monthly_registered_user_types using (user_id, month)
         group by 1, 2, 3, 4
     )
