@@ -12,13 +12,25 @@
 }}
 
 with
-    cleansed_orders as (select * from {{ ref("int__cleansed_orders") }}),
+    daily_registered_user_types as (
+        select user_id, date from {{ ref("int__daily_registered_user_types") }}
+    ),
+    cleansed_orders as (
+        select user_id, order_time_jst, sales_jpy from {{ ref("int__cleansed_orders") }}
+    ),
 
     -- ユーザーごとの日次の売上
     daily_user_sales as (
         select user_id, date(order_time_jst) as date, sum(sales_jpy) as sales
         from cleansed_orders
         group by 1, 2
+    ),
+
+    -- 日次のユーザーアクセス実績と売上実績を結合
+    daily_user_sales_with_access as (
+        select user_id, date, coalesce(sales, 0) as sales
+        from daily_registered_user_types
+        left join daily_user_sales using (user_id, date)
     ),
 
     -- 過去の売上の集計
@@ -39,7 +51,7 @@ with
                 order by unix_date(date)
                 range between unbounded preceding and 1 preceding
             ) as past_all_sales
-        from daily_user_sales
+        from user_sales_with_access
     ),
 
     -- メタ情報に合わせて出力
