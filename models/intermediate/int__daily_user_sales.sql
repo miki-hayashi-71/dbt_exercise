@@ -16,10 +16,7 @@ with
 
     -- ユーザーごとの日次の売上
     daily_user_sales as (
-        select
-            user_id,
-            date(date_trunc(order_time_jst, day)) as date,
-            sum(sales_jpy) as sales
+        select user_id, date(order_time_jst) as date, sum(sales_jpy) as sales
         from cleansed_orders
         group by 1, 2
     ),
