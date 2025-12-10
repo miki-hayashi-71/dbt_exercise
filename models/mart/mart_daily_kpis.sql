@@ -29,7 +29,7 @@ with
                 when user_type = "復帰" and payment_experience_flg = 0
                 then "復帰無課金"
                 when user_type = "既存" and payment_experience_flg = 1
-                then "既存課金景観"
+                then "既存課金経験"
                 when user_type = "既存" and payment_experience_flg = 0
                 then "既存無課金"
             end as detail_user_type,
@@ -57,7 +57,7 @@ with
             count(distinct(case when sales > 0 then user_id end)) as payment_uu,
             sum(sales) as sales
         from joined_daily_user_sales_with_user_types
-        group by date, detail_user_type
+        group by 1, 2
     )
 
 select *
