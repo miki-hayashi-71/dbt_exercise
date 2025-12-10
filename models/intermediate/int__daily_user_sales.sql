@@ -51,7 +51,7 @@ with
                 order by unix_date(date)
                 range between unbounded preceding and 1 preceding
             ) as past_all_sales
-        from user_sales_with_access
+        from daily_user_sales_with_access
     ),
 
     -- メタ情報に合わせて出力
