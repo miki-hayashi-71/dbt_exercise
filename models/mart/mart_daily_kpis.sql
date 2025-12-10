@@ -21,7 +21,18 @@ with
         select
             user_id,
             date,
-            user_type as detail_user_type,
+            case
+                when user_type = "新規"
+                then "新規"
+                when user_type = "復帰" and payment_experience_flg = 1
+                then "復帰課金経験"
+                when user_type = "復帰" and payment_experience_flg = 0
+                then "復帰無課金"
+                when user_type = "既存" and payment_experience_flg = 1
+                then "既存課金景観"
+                when user_type = "既存" and payment_experience_flg = 0
+                then "既存無課金"
+            end as detail_user_type,
             d1_access_flg,
             d1_3_access_flg,
             d1_7_access_flg,
