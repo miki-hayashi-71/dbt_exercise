@@ -6,7 +6,7 @@ models:
       - name: date
         description: 日付
         data_type: DATE
-        tests:
+        data_tests:
           - not_null:
               config:
                 where: "date >= date_sub(current_date('+9'), interval 7 day)"
