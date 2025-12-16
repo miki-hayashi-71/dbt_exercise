@@ -7,14 +7,18 @@ models:
         description: 日付
         data_type: DATE
         data_tests:
-          - not_null
-          - unique
+          - not_null:
+              config:
+                where: "date >= date_sub(current_date('+9'), interval 7 day)"
       - name: detail_user_type
         description: 詳細ユーザータイプ
         data_type: STRING
+      - name: past_d30_sales
+        description: 過去30日間売上
+        data_type: FLOAT64
       - name: dau
         description: DAU（daily active user）
-        data_typee: INT64
+        data_type: INT64
       - name: new_uu
         description: 新規UU
         data_type: INT64

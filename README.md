@@ -1,3 +1,5 @@
+Looker Studio：[レポート](https://lookerstudio.google.com/reporting/1dc48f7a-1d24-401c-a8b5-7de843eec68d/page/tEnnC)
+
 Welcome to your new dbt project!
 
 ### Using the starter project
