@@ -38,7 +38,8 @@ with
             d1_7_access_flg,
             d1_14_access_flg,
             sales,
-            payment_experience_flg
+            payment_experience_flg,
+            past_d30_payment_segment,
         from daily_registered_user_types
         left join daily_user_sales using (user_id, date)
     ),
@@ -46,6 +47,7 @@ with
         select
             date,
             detail_user_type,
+            past_d30_payment_segment,
             count(distinct user_id) as dau,
             count(
                 distinct case when detail_user_type = "新規" then user_id end
@@ -57,7 +59,7 @@ with
             count(distinct(case when sales > 0 then user_id end)) as payment_uu,
             sum(sales) as sales
         from joined_daily_user_sales_with_user_types
-        group by 1, 2
+        group by 1, 2, 3
     )
 
 select *
