@@ -1,7 +1,8 @@
 {{
     config(
         alias="daily_kpis",
-        materialized="table",
+        materialized="incremental",
+        incremental_strategy="insert_overwrite",
         partition_by={
             "field": "date",
             "data_type": "date",
@@ -11,10 +12,16 @@
 }}
 
 with
-    daily_user_sales as (select * from {{ ref("int__daily_user_sales") }}),
+    daily_user_sales as (
+        select *
+        from {{ ref("int__daily_user_sales") }}
+        {% if is_incremental() %} where date >= current_date("+9") - 7 {% endif %}
+    ),
 
     daily_registered_user_types as (
-        select * from {{ ref("int__daily_registered_user_types") }}
+        select *
+        from {{ ref("int__daily_registered_user_types") }}
+        {% if is_incremental() %} where date >= current_date("+9") - 7 {% endif %}
     ),
 
     joined_daily_user_sales_with_user_types as (
