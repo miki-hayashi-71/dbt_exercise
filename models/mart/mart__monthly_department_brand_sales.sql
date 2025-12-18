@@ -1,13 +1,20 @@
 {{
     config(
         alias="monthly_department_brand_sales",
-        materialized="table",
+        materialized="incremental",
+        incremental_strategy="insert_overwrite",
         partition_by={"field": "month", "data_type": "date", "granularity": "month"},
     )
 }}
 
 with
-    cleansed_orders as (select * from {{ ref("int__cleansed_orders") }}),
+    cleansed_orders as (
+        select *
+        from {{ ref("int__cleansed_orders") }}
+        {% if is_incremental() %}
+            where date(order_time_jst) >= date_trunc(current_date("+9") - 30, month)
+        {% endif %}
+    ),
 
     monthly_registered_user_types as (
         select * from {{ ref("int__monthly_registered_user_types") }}

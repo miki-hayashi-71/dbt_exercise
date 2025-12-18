@@ -1,12 +1,20 @@
 {{
     config(
         alias="daily_sales",
-        materialized="table",
+        materialized="incremental",
+        incremental_strategy="insert_overwrite",
         partition_by={"field": "date", "data_type": "date", "granularity": "day"},
     )
 }}
 
-with cleansed_orders as (select * from {{ ref("int__cleansed_orders") }})
+with
+    cleansed_orders as (
+        select *
+        from {{ ref("int__cleansed_orders") }}
+        {% if is_incremental() %}
+            where date(order_time_jst) >= current_date("+9") - 7
+        {% endif %}
+    )
 
 select
     date(order_time_jst) as date,
