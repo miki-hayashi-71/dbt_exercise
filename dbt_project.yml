@@ -17,6 +17,9 @@ clean-targets:
 
 models:
   dbt_exercise:
+    +persist_docs:
+      relation: true
+      columns: true
     staging:
       +materialized: view
     intermediate:
