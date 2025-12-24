@@ -1,0 +1,41 @@
+version: 2
+models:
+  - name: mart__monthly_country_kpis
+    description: 月次国別KPI
+    columns:
+      - name: month
+        description: 月
+        data_type: DATE
+      - name: country_segment
+        description: 国セグメント
+        data_type: STRING
+      - name: mau
+        description: 月間アクティブユーザー数
+        data_type: INT64
+      - name: sales
+        description: ブランド名
+        data_type: STRING
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
+      - name: payment_uu
+        description: 課金UU
+        data_type: INT64
+      - name: sales
+        description: 売上
+        data_type: FLOAT64
+      - name: payment_uu
+        description: 課金UU
+        data_type: INT64
+      - name: arppu
+        description: 課金UU当たりの平均売上額
+        data_type: FLOAT64
+      - name: payment_sales_q1
+        description: 課金UUの課金額の第一四分位数
+        data_type: FLOAT64
+      - name: payment_sales_q2
+        description: 課金UUの課金額の第二四分位数
+        data_type: FLOAT64
+      - name: payment_sales_q3
+        description: 課金UUの課金額の第三四分位数
+        data_type: FLOAT64
