@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: thelook_ecommerce
+    database: bigquery-public-data
+    schema: thelook_ecommerce
+    description: "架空のEコマースデータセット"
+    tables:
+      - name: users
+        description: "ユーザーデータ"
+
+models:
+  - name: stg__users
+    description: "ユーザーデータ"

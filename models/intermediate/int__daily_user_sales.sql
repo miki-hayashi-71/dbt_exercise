@@ -18,6 +18,7 @@ with
     cleansed_orders as (
         select user_id, order_time_jst, sales_jpy from {{ ref("int__cleansed_orders") }}
     ),
+    users as (select id as user_id, country from {{ ref("stg__users") }}),
 
     -- ユーザーごとの日次の売上
     daily_user_sales as (
@@ -54,10 +55,14 @@ with
         from daily_user_sales_with_access
     ),
 
+    -- ユーザーの国セグメント
+    users_country as (select user_id, country from users),
+
     -- メタ情報に合わせて出力
     final as (
         select
             user_id,
+            country,
             date,
             sales,
             coalesce(past_d30_sales, 0) as past_d30_sales,
@@ -83,6 +88,8 @@ with
                 when coalesce(past_all_sales, 0) > 0 then 1 else 0
             end as payment_experience_flg
         from calc_past_sales
+
+        left join users_country using (user_id)
     )
 
 select *
