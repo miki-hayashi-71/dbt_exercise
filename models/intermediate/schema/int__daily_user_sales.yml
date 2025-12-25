@@ -24,6 +24,6 @@ models:
       - name: past_d30_payment_segment
         description: 過去30日間課金セグメント
         data_type: STRING
-      - name: payent_experience_flg
+      - name: payment_experience_flg
         description: 課金経験フラグ
         data_type: INT64
