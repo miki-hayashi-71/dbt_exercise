@@ -20,6 +20,7 @@ models:
     +persist_docs:
       relation: true
       columns: true
+    +dbt-osmosis: "schema/{model}.yml"
     staging:
       +materialized: view
     intermediate:
